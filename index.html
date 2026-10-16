@@ -49,7 +49,7 @@ function showFeedback(error){
   closeFeedback();
   feedbackDialog.className='feedback-cover '+(isDuplicate?'duplicate':isWaiting?'waiting':'error');
   document.getElementById('feedbackHeading').textContent=isDuplicate?'Voto já registrado':isWaiting?'Aguarde para votar':'Serviço indisponível';
-  document.getElementById('feedbackText').textContent=isDuplicate?'Este cadastro já participou da simulação. Não é possível votar novamente.':isWaiting?'Alguém nesta conexão votou recentemente. Aguarde 5 minutos para outra pessoa participar.':'Não foi possível confirmar a resposta do servidor. Tente novamente em alguns instantes.';
+  document.getElementById('feedbackText').textContent=isDuplicate?'Este nome e nascimento já têm voto confirmado. Esperar 5 minutos não permite votar novamente. A espera de 5 minutos vale somente para outra pessoa na mesma conexão.':isWaiting?'Outra pessoa já votou usando esta conexão. Aguarde o tempo abaixo para fazer um novo cadastro com dados diferentes.':'Não foi possível confirmar a resposta do servidor. Tente novamente em alguns instantes.';
   waitClock.hidden=!isWaiting;
   if(isWaiting){
     const until=Date.now()+Math.max(1,Math.ceil(Number(error.retryAfterSeconds)||300))*1000;
