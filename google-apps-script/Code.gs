@@ -7,6 +7,7 @@ const SHEET_ID='1Xvu8XsGzHoLZF_3E0JRa8Fe9IGBQC0YwNQ45QSmlhjw';
 function setupSheets() {
   tab('Cadastros', ['DataHora','Nome','Nascimento','TokenHash','Votou']);
   tab('Votos', ['DataHora','Número']);
+  tab('IP_Votos', ['DataHora','IPHash']);
   return 'Pronto: abas Cadastros e Votos verificadas. A aba Resumo fica preservada.';
 }
 function tab(name, headers) {
@@ -30,7 +31,36 @@ function doGet() {
 function json(x){return ContentService.createTextOutput(JSON.stringify(x)).setMimeType(ContentService.MimeType.JSON)}
 function sha(value){const bytes=Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,value);return bytes.map(b=>('0'+((b+256)%256).toString(16)).slice(-2)).join('')}
 
-const DUPLICATE_MESSAGE = 'Toma vergonha voce ja votou';
+const DUPLICATE_MESSAGE = 'Este cadastro já confirmou um voto nesta simulação. Não é possível votar novamente.';
+const IP_COOLDOWN_MS = 5 * 60 * 1000;
+
+function getIpWaitSeconds_(sheet, ipHash, nowMs) {
+  if (!/^[a-f0-9]{64}$/.test(ipHash)) return -1;
+  // Percorre as participações recentes em blocos, sem buscar toda a planilha.
+  for (let end=sheet.getLastRow(); end>=2; end-=250) {
+    const start=Math.max(2,end-249);
+    const rows=sheet.getRange(start,1,end-start+1,2).getValues();
+    for (let i=rows.length-1;i>=0;i--) {
+      const value=rows[i][0];
+      const t=value instanceof Date ? value.getTime() : new Date(value).getTime();
+      if (!Number.isFinite(t)) continue;
+      const elapsed=nowMs-t;
+      if (elapsed >= IP_COOLDOWN_MS) return 0;
+      if (elapsed < 0) continue;
+      if (String(rows[i][1]) === ipHash) {
+        return Math.max(1,Math.ceil((IP_COOLDOWN_MS-elapsed)/1000));
+      }
+    }
+  }
+  return 0;
+}
+function ipCooldownResponse_(seconds) {
+  return json({
+    ok:false,code:'IP_COOLDOWN',
+    retryAfterSeconds:seconds,
+    error:'Outra pessoa usou esta conexão recentemente. Aguarde para participar.'
+  });
+}
 
 // Mesma pessoa = nome normalizado + data de nascimento.
 // Nao comprova identidade: para evitar identidades inventadas e preciso verificar externamente.
@@ -59,6 +89,9 @@ function doPost(e) {
     const x = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     const reg = tab('Cadastros', ['DataHora','Nome','Nascimento','TokenHash','Votou']);
     const votes = tab('Votos', ['DataHora','Número']);
+    const ipHash = String(x.ipHash || '');
+    const ipVotes = (x.action === 'register' || x.action === 'vote')
+      ? tab('IP_Votos', ['DataHora','IPHash']) : null;
 
     if (x.action === 'results') {
       const data = votes.getLastRow() > 1
@@ -91,6 +124,10 @@ function doPost(e) {
         return json({ok:false,error:DUPLICATE_MESSAGE,code:'ALREADY_VOTED'});
       }
 
+      const waitSeconds = getIpWaitSeconds_(ipVotes, ipHash, Date.now());
+      if (waitSeconds < 0) return json({ok:false,error:'Identificação da conexão indisponível. Acesse a urna pelo link oficial.'});
+      if (waitSeconds > 0) return ipCooldownResponse_(waitSeconds);
+
       const token = Utilities.getUuid() + Utilities.getUuid();
       if (matching.length > 0) {
         // Retoma cadastro incompleto. O token antigo deixa de funcionar.
@@ -115,8 +152,13 @@ function doPost(e) {
       if (String(rows[i][1]).trim().toUpperCase() === 'SIM') {
         return json({ok:false,error:DUPLICATE_MESSAGE,code:'ALREADY_VOTED'});
       }
+      const waitSeconds = getIpWaitSeconds_(ipVotes, ipHash, Date.now());
+      if (waitSeconds < 0) return json({ok:false,error:'Identificação da conexão indisponível. Acesse a urna pelo link oficial.'});
+      if (waitSeconds > 0) return ipCooldownResponse_(waitSeconds);
+
       votes.appendRow([new Date(),vote]);
       reg.getRange(i+2,5).setValue('SIM');
+      ipVotes.appendRow([new Date(),ipHash]);
       return json({ok:true});
     }
 
