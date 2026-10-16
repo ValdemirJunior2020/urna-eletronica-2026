@@ -1,6 +1,6 @@
 // Same-origin Netlify bridge avoids Apps Script CORS errors on mobile browsers.
 // Google Sheets remains the database; this function stores no user information.
-const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbwKGwCz3YOBahIg-c72wmZpd5I3FikOeoVYF6ssmSnmCl8uNCBbw0WOdpHCoaJWDnL1XA/exec';
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyRqltnrpsX7Qifox4zbfhzv8H5JwTruYsjfXOvteVFWnNOft4ojSQNHrXjB7wGfbToNw/exec';
 
 function reply(data,status=200){
   return new Response(JSON.stringify(data),{
