@@ -1,0 +1,1 @@
+// URL pública do Google Apps Script implantado como Web App.\nwindow.URNA_API_URL = '';\n
