@@ -16,17 +16,20 @@ let registerBusy=false, resultsBusy=false, loadingTimer=null;
 const pendingOperations=new Map();
 function setLoading(operation,active,label){
   const overlay=document.getElementById('busyOverlay');
-  if(active){
-    pendingOperations.set(operation,label||'Aguarde...');
-    if(loadingTimer)clearTimeout(loadingTimer);
-    loadingTimer=setTimeout(()=>{
-      if(pendingOperations.size){document.getElementById('busyLabel').textContent=Array.from(pendingOperations.values()).at(-1);overlay.hidden=false}
-    },220);
+  if(active)pendingOperations.set(operation,label||'Aguarde...');
+  else pendingOperations.delete(operation);
+
+  if(pendingOperations.size===0){
+    if(loadingTimer){clearTimeout(loadingTimer);loadingTimer=null}
+    overlay.hidden=true;
   }else{
-    pendingOperations.delete(operation);
-    if(loadingTimer)clearTimeout(loadingTimer);
-    if(pendingOperations.size){document.getElementById('busyLabel').textContent=Array.from(pendingOperations.values()).at(-1)}
-    else overlay.hidden=true;
+    document.getElementById('busyLabel').textContent=Array.from(pendingOperations.values()).at(-1);
+    if(overlay.hidden&&!loadingTimer){
+      loadingTimer=setTimeout(()=>{
+        loadingTimer=null;
+        if(pendingOperations.size)overlay.hidden=false;
+      },220);
+    }
   }
   document.getElementById('enter').disabled=registerBusy;
   document.getElementById('confirm').disabled=busy;
