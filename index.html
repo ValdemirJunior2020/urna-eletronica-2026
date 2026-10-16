@@ -1,5 +1,5 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#142e27"><title>Urna 2026 — Simulação</title><link rel="manifest" href="/manifest.webmanifest"><style>
-:root{font-family:system-ui,-apple-system,Arial,sans-serif;color:#183129;background:#edf2ed}*{box-sizing:border-box}body{margin:0}main{max-width:960px;margin:auto;padding:16px}header{text-align:center;padding:14px 0}h1{font-size:clamp(24px,5vw,35px);margin:6px}.notice{background:#fff5d6;border:1px solid #e7c670;border-radius:10px;padding:10px;font-size:13px;font-weight:700;text-align:center}.frame{background:#dfe0dc;padding:16px;border-radius:16px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:14px;margin-top:16px;box-shadow:0 12px 35px #0001}.screen{background:white;min-height:355px;border:2px solid #777;padding:20px;display:flex;flex-direction:column;justify-content:space-between}.minor{font-size:12px;letter-spacing:.08em}.office{font-size:24px;font-weight:800}.digits{display:flex;gap:6px;margin:10px 0}.digit{display:grid;place-items:center;border:2px solid #282828;width:52px;height:62px;font-size:32px}.candidate{display:flex;align-items:center;gap:16px;min-height:145px}.candidate img{width:112px;height:142px;object-fit:cover;border:1px solid #aaa}.candidate strong{font-size:23px}.candidate small{display:block;color:#555;margin-top:8px}.keyboard{background:#262827;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:9px;justify-content:center}.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.key,.action{cursor:pointer;border:0;border-bottom:4px solid #08080866;border-radius:4px;min-height:54px;font-size:24px;font-weight:750;background:#101313;color:white;touch-action:manipulation}.key:active,.action:active{transform:translateY(2px)}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.action{font-size:11px;color:black;min-height:52px}.white{background:#f7f7f7}.orange{background:#ecad5a}.green{background:#76b89b}.card{background:white;border-radius:14px;padding:18px;margin-top:16px;box-shadow:0 4px 15px #0001}.card h2{margin:0 0 12px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:13px;font-weight:700}input{display:block;margin-top:6px;width:100%;padding:13px;border:1px solid #b9c5be;border-radius:8px;font-size:16px}/* Campos de nascimento sempre legíveis no Safari do iPhone. */
+:root{font-family:system-ui,-apple-system,Arial,sans-serif;color:#183129;background:#edf2ed}*{box-sizing:border-box}body{margin:0}main{max-width:960px;margin:auto;padding:16px}header{text-align:center;padding:14px 0}h1{font-size:clamp(24px,5vw,35px);margin:6px}.notice{background:#fff5d6;border:1px solid #e7c670;border-radius:10px;padding:10px;font-size:13px;font-weight:700;text-align:center}.frame{background:#dfe0dc;padding:16px;border-radius:16px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:14px;margin-top:16px;box-shadow:0 12px 35px #0001}.screen{background:white;min-height:355px;border:2px solid #777;padding:20px;display:flex;flex-direction:column;justify-content:space-between}.minor{font-size:12px;letter-spacing:.08em}.office{font-size:24px;font-weight:800}.digits{display:flex;gap:6px;margin:10px 0}.digit{display:grid;place-items:center;border:2px solid #282828;width:52px;height:62px;font-size:32px}.candidate{display:flex;align-items:center;gap:16px;min-height:145px}.candidate img{width:112px;height:142px;object-fit:cover;border:1px solid #aaa}.candidate strong{font-size:23px}.candidate small{display:block;color:#555;margin-top:8px}.keyboard{background:#262827;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:9px;justify-content:center}.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.key,.action{cursor:pointer;border:0;border-bottom:4px solid #08080866;border-radius:4px;min-height:54px;font-size:24px;font-weight:750;background:#101313;color:white;touch-action:manipulation}.key:active,.action:active{transform:translateY(2px)}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.action{font-size:11px;color:black;min-height:52px}.white{background:#f7f7f7}.orange{background:#ecad5a}.green{background:#76b89b}.card{background:white;border-radius:14px;padding:18px;margin-top:16px;box-shadow:0 4px 15px #0001}.card h2{margin:0 0 12px}.vote-success{text-align:center;border:1px solid #d3e6d9;padding:22px 18px}.vote-success h2{font-size:21px;color:#155a44}.vote-success p{margin:8px 0}.vote-success .primary{margin-top:8px;min-width:185px}.vote-success #shareStatus{min-height:0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:13px;font-weight:700}input{display:block;margin-top:6px;width:100%;padding:13px;border:1px solid #b9c5be;border-radius:8px;font-size:16px}/* Campos de nascimento sempre legíveis no Safari do iPhone. */
 .birth-field{margin:0;padding:0;border:0;min-width:0}
 .birth-field legend{font-size:13px;font-weight:700;margin-bottom:6px;padding:0}
 .birth-parts{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.15fr) minmax(0,1fr);gap:8px}
@@ -18,6 +18,12 @@
 <input id="birthYear" aria-label="Ano de nascimento" autocomplete="bday-year" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="AAAA">
 </div><p class="birth-help">Escolha o dia e o mês e digite os 4 números do ano.</p></fieldset></div><label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input style="width:auto" type="checkbox" id="consent"> Concordo com o uso dos dados nesta simulação.</label><button class="primary" id="enter">Entrar na urna</button><p id="registerStatus" class="small"></p></section>
 <section id="voting" hidden><div class="frame"><div class="screen"><div><div class="minor">SEU VOTO PARA</div><div class="office">PRESIDENTE</div><div class="digits" id="digits"><div class="digit"></div><div class="digit"></div></div></div><div class="candidate" id="candidate"><p>Digite dois números para visualizar o candidato.</p></div><div class="minor">BRANCO · CORRIGE · CONFIRMA</div></div><div class="keyboard"><div class="keys" id="keys"></div><div class="actions"><button class="action white" id="blank">BRANCO</button><button class="action orange" id="clear">CORRIGE</button><button class="action green" id="confirm">CONFIRMA</button></div></div></div><p id="message" role="status" aria-live="polite"></p></section>
+<section class="card vote-success" id="voteSuccess" hidden aria-live="polite">
+<h2>✓ Voto registrado!</h2>
+<p class="small">Convide outras pessoas para participar desta simulação.</p>
+<button class="primary" id="shareVote" type="button">↗ Compartilhar</button>
+<p id="shareStatus" class="small" role="status"></p>
+</section>
 <section class="card" id="results"><h2>📊 Resultado da simulação</h2><p class="small">Contagem dos votos enviados a este aplicativo. Não representa votos oficiais nem uma amostra científica.</p><div class="stats"><div><strong>Flávio Bolsonaro (22)</strong><div id="fcount">0 votos</div><div class="meter"><div class="fill" id="fbar" style="width:0%"></div></div><span id="fpct">0%</span></div><div><strong>Luiz Inácio Lula da Silva (13)</strong><div id="lcount">0 votos</div><div class="meter"><div class="fill blue" id="lbar" style="width:0%"></div></div><span id="lpct">0%</span></div></div><p id="leader" style="font-weight:800">Ainda sem votos.</p><button class="primary" id="refresh">Atualizar placar</button><p class="small" id="backendState"></p></section>
 <footer>Projeto educacional independente · Layout inspirado na urna brasileira · Áudios preservados como referência do projeto de João Pedro Carvalho (MIT) · Fotos Wikimedia Commons</footer></main>
 <script src="/config.js"></script><script>
@@ -113,6 +119,33 @@ document.getElementById('enter').onclick=async()=>{
   }catch(e){status.textContent=e.message}
   finally{registerBusy=false;setLoading('register',false)}
 };
+const SHARE_URL='https://urna-eletronica2026.netlify.app/';
+document.getElementById('shareVote').onclick=async()=>{
+  const status=document.getElementById('shareStatus');
+  status.textContent='';
+  try{
+    if(typeof navigator.share==='function'){
+      await navigator.share({
+        title:'Urna Brasil 2026 — Simulação',
+        text:'Participe desta simulação não oficial, sem vínculo com o TSE.',
+        url:SHARE_URL
+      });
+    }else if(navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
+      await navigator.clipboard.writeText(SHARE_URL);
+      status.textContent='Link copiado!';
+    }else{
+      window.prompt('Copie o link para compartilhar:',SHARE_URL);
+    }
+  }catch(error){
+    if(error&&error.name==='AbortError')return;
+    try{
+      if(navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
+        await navigator.clipboard.writeText(SHARE_URL);
+        status.textContent='Link copiado!';
+      }else window.prompt('Copie o link para compartilhar:',SHARE_URL);
+    }catch(copyError){window.prompt('Copie o link para compartilhar:',SHARE_URL)}
+  }
+};
 document.getElementById('confirm').onclick=async()=>{
   if(busy||!token)return;
   const vote=selected==='BLANK'?'BLANK':number;
@@ -124,8 +157,9 @@ document.getElementById('confirm').onclick=async()=>{
     await send('vote',{token,vote});
     sound('confirm');
     document.getElementById('voting').hidden=true;
-    document.getElementById('message').textContent='FIM — voto da simulação registrado!';
     token='';
+    document.getElementById('voteSuccess').hidden=false;
+    document.getElementById('voteSuccess').scrollIntoView({behavior:'smooth',block:'center'});
     await refresh();
   }catch(e){document.getElementById('message').textContent=e.message}
   finally{busy=false;setLoading('vote',false)}
