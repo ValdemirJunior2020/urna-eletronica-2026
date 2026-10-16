@@ -26,7 +26,7 @@ function tab(name, headers) {
   return sh;
 }
 function doGet() {
-  return json({ok:true,service:'Urna Brasil — Simulacao educativa',status:'ready'});
+  return json({ok:true,service:'Urna Brasil — Simulacao educativa',status:'ready',version:'ip-cooldown-5m-v2',ipCooldownSeconds:300});
 }
 function json(x){return ContentService.createTextOutput(JSON.stringify(x)).setMimeType(ContentService.MimeType.JSON)}
 function sha(value){const bytes=Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,value);return bytes.map(b=>('0'+((b+256)%256).toString(16)).slice(-2)).join('')}
