@@ -29,10 +29,102 @@ function doGet() {
 }
 function json(x){return ContentService.createTextOutput(JSON.stringify(x)).setMimeType(ContentService.MimeType.JSON)}
 function sha(value){const bytes=Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,value);return bytes.map(b=>('0'+((b+256)%256).toString(16)).slice(-2)).join('')}
-function doPost(e){const lock=LockService.getScriptLock();lock.waitLock(15000);try{
-const x=JSON.parse(e.postData.contents),reg=tab('Cadastros',['DataHora','Nome','Nascimento','TokenHash','Votou']),votes=tab('Votos',['DataHora','Número']);
-if(x.action==='results'){const data=votes.getLastRow()>1?votes.getRange(2,2,votes.getLastRow()-1,1).getValues().flat():[];return json({ok:true,counts:{'22':data.filter(v=>String(v)==='22').length,'13':data.filter(v=>String(v)==='13').length},blank:data.filter(v=>v==='BLANK').length})}
-if(x.action==='register'){const name=String(x.name||'').trim(),birth=String(x.birth||'');if(name.length<3||name.length>100||!/^\d{4}-\d{2}-\d{2}$/.test(birth)||new Date(birth)>new Date())return json({ok:false,error:'Dados inválidos'});const token=Utilities.getUuid()+Utilities.getUuid();reg.appendRow([new Date(),name,birth,sha(token),'NÃO']);return json({ok:true,token})}
-if(x.action==='vote'){const vote=String(x.vote||''),token=String(x.token||'');if(!['22','13','BLANK'].includes(vote)||token.length<30)return json({ok:false,error:'Voto inválido'});const hash=sha(token);if(reg.getLastRow()<2)return json({ok:false,error:'Cadastro inexistente'});const records=reg.getRange(2,4,reg.getLastRow()-1,2).getValues();const i=records.findIndex(row=>row[0]===hash);if(i<0)return json({ok:false,error:'Cadastro não encontrado'});if(records[i][1]==='SIM')return json({ok:false,error:'Token já utilizado'});votes.appendRow([new Date(),vote]);reg.getRange(i+2,5).setValue('SIM');return json({ok:true})}
-return json({ok:false,error:'Ação inválida'});
-}catch(err){return json({ok:false,error:'Falha de processamento'})}finally{lock.releaseLock()}}
+
+const DUPLICATE_MESSAGE = 'Toma vergonha voce ja votou';
+
+// Mesma pessoa = nome normalizado + data de nascimento.
+// Nao comprova identidade: para evitar identidades inventadas e preciso verificar externamente.
+function normalizeName_(name) {
+  return String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .trim().replace(/\s+/g,' ').toLocaleLowerCase('pt-BR');
+}
+function normalizeBirth_(birth) {
+  if (birth instanceof Date) {
+    return Utilities.formatDate(birth, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  }
+  const s = String(birth || '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  return s;
+}
+function isValidBirth_(birth) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(birth)) return false;
+  const d = new Date(birth + 'T12:00:00Z');
+  return !isNaN(d.getTime()) && d.toISOString().slice(0,10) === birth &&
+    d <= new Date() && Number(birth.slice(0,4)) >= 1900;
+}
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  try {
+    if (!lock.tryLock(25000)) return json({ok:false,error:'Sistema ocupado. Tente novamente.'});
+    const x = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    const reg = tab('Cadastros', ['DataHora','Nome','Nascimento','TokenHash','Votou']);
+    const votes = tab('Votos', ['DataHora','Número']);
+
+    if (x.action === 'results') {
+      const data = votes.getLastRow() > 1
+        ? votes.getRange(2,2,votes.getLastRow()-1,1).getValues().flat()
+        : [];
+      return json({ok:true,counts:{
+        '22': data.filter(v => String(v) === '22').length,
+        '13': data.filter(v => String(v) === '13').length
+      },blank:data.filter(v => v === 'BLANK').length});
+    }
+
+    if (x.action === 'register') {
+      const name = String(x.name || '').trim().replace(/\s+/g,' ');
+      const birth = String(x.birth || '').trim();
+      if (name.length < 3 || name.length > 100 || !/^[\p{L}][\p{L} .'-]{2,99}$/u.test(name) ||
+          !isValidBirth_(birth)) {
+        return json({ok:false,error:'Nome ou data de nascimento inválidos.'});
+      }
+
+      const rows = reg.getLastRow() > 1
+        ? reg.getRange(2,2,reg.getLastRow()-1,4).getValues()
+        : [];
+      const matching = [];
+      rows.forEach((row,i) => {
+        if (normalizeName_(row[0]) === normalizeName_(name) &&
+            normalizeBirth_(row[1]) === birth) matching.push({row,i});
+      });
+
+      if (matching.some(item => String(item.row[3]).trim().toUpperCase() === 'SIM')) {
+        return json({ok:false,error:DUPLICATE_MESSAGE,code:'ALREADY_VOTED'});
+      }
+
+      const token = Utilities.getUuid() + Utilities.getUuid();
+      if (matching.length > 0) {
+        // Retoma cadastro incompleto. O token antigo deixa de funcionar.
+        const first = matching[0];
+        reg.getRange(first.i+2,4).setValue(sha(token));
+        reg.getRange(first.i+2,5).setValue('NÃO');
+      } else {
+        reg.appendRow([new Date(),name,birth,sha(token),'NÃO']);
+      }
+      return json({ok:true,token});
+    }
+
+    if (x.action === 'vote') {
+      const vote = String(x.vote || ''), token = String(x.token || '');
+      if (!['22','13','BLANK'].includes(vote) || token.length < 30) {
+        return json({ok:false,error:'Voto inválido.'});
+      }
+      if (reg.getLastRow() < 2) return json({ok:false,error:'Cadastro inexistente.'});
+      const rows = reg.getRange(2,4,reg.getLastRow()-1,2).getValues();
+      const i = rows.findIndex(row => row[0] === sha(token));
+      if (i < 0) return json({ok:false,error:'Cadastro não encontrado. Reinicie o cadastro.'});
+      if (String(rows[i][1]).trim().toUpperCase() === 'SIM') {
+        return json({ok:false,error:DUPLICATE_MESSAGE,code:'ALREADY_VOTED'});
+      }
+      votes.appendRow([new Date(),vote]);
+      reg.getRange(i+2,5).setValue('SIM');
+      return json({ok:true});
+    }
+
+    return json({ok:false,error:'Ação inválida.'});
+  } catch (err) {
+    console.error(err);
+    return json({ok:false,error:'Falha no servidor. Tente novamente.'});
+  } finally {
+    if (lock.hasLock()) lock.releaseLock();
+  }
+}
