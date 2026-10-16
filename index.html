@@ -1,6 +1,7 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#142e27"><title>Urna 2026 — Simulação</title><link rel="manifest" href="/manifest.webmanifest"><style>
 :root{font-family:system-ui,-apple-system,Arial,sans-serif;color:#183129;background:#edf2ed}*{box-sizing:border-box}body{margin:0}main{max-width:960px;margin:auto;padding:16px}header{text-align:center;padding:14px 0}h1{font-size:clamp(24px,5vw,35px);margin:6px}.notice{background:#fff5d6;border:1px solid #e7c670;border-radius:10px;padding:10px;font-size:13px;font-weight:700;text-align:center}.frame{background:#dfe0dc;padding:16px;border-radius:16px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:14px;margin-top:16px;box-shadow:0 12px 35px #0001}.screen{background:white;min-height:355px;border:2px solid #777;padding:20px;display:flex;flex-direction:column;justify-content:space-between}.minor{font-size:12px;letter-spacing:.08em}.office{font-size:24px;font-weight:800}.digits{display:flex;gap:6px;margin:10px 0}.digit{display:grid;place-items:center;border:2px solid #282828;width:52px;height:62px;font-size:32px}.candidate{display:flex;align-items:center;gap:16px;min-height:145px}.candidate img{width:112px;height:142px;object-fit:cover;border:1px solid #aaa}.candidate strong{font-size:23px}.candidate small{display:block;color:#555;margin-top:8px}.keyboard{background:#262827;border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:9px;justify-content:center}.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.key,.action{cursor:pointer;border:0;border-bottom:4px solid #08080866;border-radius:4px;min-height:54px;font-size:24px;font-weight:750;background:#101313;color:white;touch-action:manipulation}.key:active,.action:active{transform:translateY(2px)}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.action{font-size:11px;color:black;min-height:52px}.white{background:#f7f7f7}.orange{background:#ecad5a}.green{background:#76b89b}.card{background:white;border-radius:14px;padding:18px;margin-top:16px;box-shadow:0 4px 15px #0001}.card h2{margin:0 0 12px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:13px;font-weight:700}input{display:block;margin-top:6px;width:100%;padding:13px;border:1px solid #b9c5be;border-radius:8px;font-size:16px}.primary{background:#155a44;color:white;border:0;border-radius:8px;padding:14px 18px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px}.primary:disabled{opacity:.45;cursor:not-allowed}.meter{height:20px;background:#e6e9e6;border-radius:50px;overflow:hidden;margin-top:5px}.fill{height:100%;background:#4f7d6e}.fill.blue{background:#587fa7}.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}.small{font-size:13px;color:#56645d}#message{min-height:24px;font-weight:700}footer{text-align:center;padding:24px;font-size:12px;color:#53645c}@media(max-width:690px){main{padding:10px}.frame{grid-template-columns:1fr;padding:10px}.screen{min-height:300px;padding:15px}.keyboard{padding:12px}.key{min-height:52px}.fields{grid-template-columns:1fr}.candidate img{width:88px;height:110px}.candidate strong{font-size:19px}}
-</style></head><body><main><header><h1>🗳️ Urna Brasil 2026</h1><div class="notice">SIMULAÇÃO NÃO OFICIAL · NÃO É PESQUISA ELEITORAL · SEM VÍNCULO COM O TSE</div></header>
+[hidden]{display:none!important}.busy-overlay{position:fixed;inset:0;z-index:9999;background:#f4f8f4c9;backdrop-filter:blur(3px);display:grid;place-items:center;padding:16px}.busy-panel{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid #d8e4da;padding:14px 20px;border-radius:14px;box-shadow:0 12px 32px #18312924;font-weight:700;font-size:14px;min-width:195px}.busy-panel img{width:30px;height:30px}.primary:disabled,.action:disabled{opacity:.5;cursor:progress}
+</style></head><body><div id="busyOverlay" class="busy-overlay" role="status" aria-live="polite" aria-atomic="true" hidden><div class="busy-panel"><img src="/loading.gif" width="30" height="30" alt=""><span id="busyLabel">Carregando...</span></div></div><main><header><h1>🗳️ Urna Brasil 2026</h1><div class="notice">SIMULAÇÃO NÃO OFICIAL · NÃO É PESQUISA ELEITORAL · SEM VÍNCULO COM O TSE</div></header>
 <section class="card" id="registration"><h2>Cadastro para simulação</h2><p class="small">Nome e data de nascimento são dados pessoais. Ao participar, você concorda com o registro destes dados para controle da simulação. A escolha do voto é registrada separadamente e não aparece junto ao cadastro.</p><div class="fields"><label>Nome completo<input id="name" autocomplete="name" placeholder="Seu nome" maxlength="100"></label><label>Data de nascimento<input id="birth" type="date"></label></div><label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input style="width:auto" type="checkbox" id="consent"> Concordo com o uso dos dados nesta simulação.</label><button class="primary" id="enter">Entrar na urna</button><p id="registerStatus" class="small"></p></section>
 <section id="voting" hidden><div class="frame"><div class="screen"><div><div class="minor">SEU VOTO PARA</div><div class="office">PRESIDENTE</div><div class="digits" id="digits"><div class="digit"></div><div class="digit"></div></div></div><div class="candidate" id="candidate"><p>Digite dois números para visualizar o candidato.</p></div><div class="minor">BRANCO · CORRIGE · CONFIRMA</div></div><div class="keyboard"><div class="keys" id="keys"></div><div class="actions"><button class="action white" id="blank">BRANCO</button><button class="action orange" id="clear">CORRIGE</button><button class="action green" id="confirm">CONFIRMA</button></div></div></div><p id="message" role="status" aria-live="polite"></p></section>
 <section class="card" id="results"><h2>📊 Resultado da simulação</h2><p class="small">Contagem dos votos enviados a este aplicativo. Não representa votos oficiais nem uma amostra científica.</p><div class="stats"><div><strong>Flávio Bolsonaro (22)</strong><div id="fcount">0 votos</div><div class="meter"><div class="fill" id="fbar" style="width:0%"></div></div><span id="fpct">0%</span></div><div><strong>Luiz Inácio Lula da Silva (13)</strong><div id="lcount">0 votos</div><div class="meter"><div class="fill blue" id="lbar" style="width:0%"></div></div><span id="lpct">0%</span></div></div><p id="leader" style="font-weight:800">Ainda sem votos.</p><button class="primary" id="refresh">Atualizar placar</button><p class="small" id="backendState"></p></section>
@@ -11,14 +12,105 @@ const AUDIO_BASE='https://raw.githubusercontent.com/JohnPetros/urna-eletronica/m
 const images={ '22':'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Foto_oficial_do_senador_Fl%C3%A1vio_Bolsonaro_%28v._AgSen%29_%283x4%29.jpg/250px-Foto_oficial_do_senador_Fl%C3%A1vio_Bolsonaro_%28v._AgSen%29_%283x4%29.jpg','13':'https://ichef.bbci.co.uk/news/1024/cpsprodpb/e94d/live/f1d3cb20-8c1f-11f1-94b2-05bc97107049.jpg.webp'};
 const names={'22':'Flávio Bolsonaro','13':'Luiz Inácio Lula da Silva'};
 let number='',selected='',token='',busy=false;
+let registerBusy=false, resultsBusy=false, loadingTimer=null;
+const pendingOperations=new Map();
+function setLoading(operation,active,label){
+  const overlay=document.getElementById('busyOverlay');
+  if(active){
+    pendingOperations.set(operation,label||'Aguarde...');
+    if(loadingTimer)clearTimeout(loadingTimer);
+    loadingTimer=setTimeout(()=>{
+      if(pendingOperations.size){document.getElementById('busyLabel').textContent=Array.from(pendingOperations.values()).at(-1);overlay.hidden=false}
+    },220);
+  }else{
+    pendingOperations.delete(operation);
+    if(loadingTimer)clearTimeout(loadingTimer);
+    if(pendingOperations.size){document.getElementById('busyLabel').textContent=Array.from(pendingOperations.values()).at(-1)}
+    else overlay.hidden=true;
+  }
+  document.getElementById('enter').disabled=registerBusy;
+  document.getElementById('confirm').disabled=busy;
+  document.getElementById('refresh').disabled=resultsBusy;
+}
 function sound(type){const a=new Audio(AUDIO_BASE+(type==='confirm'?'confirm.wav':'key.wav'));a.volume=.6;a.play().catch(()=>{})}
 function render(){document.querySelectorAll('.digit').forEach((el,i)=>el.textContent=number[i]||'');const c=document.getElementById('candidate');if(!number)c.innerHTML='<p>Digite dois números para visualizar o candidato.</p>';else if(names[number])c.innerHTML='<img alt="Foto de '+names[number]+'" src="'+images[number]+'"><div><strong>'+names[number]+'</strong><small>Número: '+number+'</small></div>';else if(number.length===2)c.textContent='Número não disponível nesta simulação.';else c.textContent='Digite o segundo número.'}
 for(let n=1;n<=9;n++)add(n);add(0);function add(n){let b=document.createElement('button');b.className='key';b.textContent=n;b.onclick=()=>{if(number.length<2&&!busy){number+=String(n);selected='';sound('key');render()}};document.getElementById('keys').append(b)}
 document.getElementById('clear').onclick=()=>{number='';selected='';sound('key');render()};
 document.getElementById('blank').onclick=()=>{number='';selected='BLANK';sound('key');document.getElementById('candidate').textContent='VOTO EM BRANCO. Pressione CONFIRMA.';renderBlank()};
 function renderBlank(){document.querySelectorAll('.digit').forEach(el=>el.textContent='');document.getElementById('candidate').textContent='VOTO EM BRANCO. Pressione CONFIRMA.'}
-async function send(action,payload){if(!API_URL)throw Error('Integração com Google Sheets ainda não configurada. Configure config.js.');const response=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...payload})});const data=await response.json();if(!data.ok)throw Error(data.error||'Falha ao salvar');return data}
-document.getElementById('enter').onclick=async()=>{const name=document.getElementById('name').value.trim(),birth=document.getElementById('birth').value,status=document.getElementById('registerStatus');if(name.length<3||!/^\d{4}-\d{2}-\d{2}$/.test(birth)||!document.getElementById('consent').checked){status.textContent='Preencha nome, nascimento e consentimento.';return}try{status.textContent='Registrando...';const d=await send('register',{name,birth});token=d.token;document.getElementById('registration').hidden=true;document.getElementById('voting').hidden=false;document.getElementById('message').textContent='Digite 22 ou 13 para votar.'}catch(e){status.textContent=e.message}};
-document.getElementById('confirm').onclick=async()=>{if(busy||!token)return;let vote=selected==='BLANK'?'BLANK':number;if(!['22','13','BLANK'].includes(vote)){document.getElementById('message').textContent='Digite 22 ou 13, ou selecione BRANCO.';return}busy=true;try{await send('vote',{token,vote});sound('confirm');document.getElementById('voting').hidden=true;document.getElementById('message').textContent='FIM — voto da simulação registrado!';document.getElementById('registration').hidden=true;await refresh()}catch(e){document.getElementById('message').textContent=e.message}finally{busy=false}};
-async function refresh(){if(!API_URL){document.getElementById('backendState').textContent='Placar indisponível até configurar Google Sheets.';return}try{const d=await send('results',{});const f=d.counts['22']||0,l=d.counts['13']||0,total=f+l;document.getElementById('fcount').textContent=f+' votos';document.getElementById('lcount').textContent=l+' votos';for(const [key,count] of [['f',f],['l',l]]){let p=total?100*count/total:0;document.getElementById(key+'pct').textContent=p.toFixed(1)+'%';document.getElementById(key+'bar').style.width=p+'%'}document.getElementById('leader').textContent=total===0?'Ainda sem votos.':f===l?'Empate na simulação.':(f>l?'Flávio Bolsonaro':'Luiz Inácio Lula da Silva')+' está à frente na simulação.';document.getElementById('backendState').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR')}catch(e){document.getElementById('backendState').textContent=e.message}}document.getElementById('refresh').onclick=refresh;render();refresh();
+async function send(action,payload){
+  if(!API_URL)throw Error('Integração com Google Sheets não configurada.');
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),25000);
+  try{
+    const response=await fetch(API_URL,{
+      method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action,...payload}),signal:controller.signal
+    });
+    if(!response.ok)throw Error('Servidor respondeu HTTP '+response.status+'.');
+    let data;
+    try{data=await response.json()}catch(e){throw Error('Resposta do Google Apps Script inválida ou acesso não autorizado.')}
+    if(!data.ok)throw Error(data.error||'Falha ao salvar.');
+    return data;
+  }catch(e){
+    if(e.name==='AbortError')throw Error(action==='vote'?'A confirmação demorou. Verifique o placar antes de tentar novamente.':'A conexão demorou. Confira sua internet e tente novamente.');
+    throw e;
+  }finally{clearTimeout(timer)}
+}
+document.getElementById('enter').onclick=async()=>{
+  if(registerBusy)return;
+  const name=document.getElementById('name').value.trim();
+  const birth=document.getElementById('birth').value;
+  const status=document.getElementById('registerStatus');
+  if(name.length<3||!/^\d{4}-\d{2}-\d{2}$/.test(birth)||!document.getElementById('consent').checked){
+    status.textContent='Preencha nome, nascimento e consentimento.';return;
+  }
+  registerBusy=true;status.textContent='';
+  setLoading('register',true,'Verificando cadastro...');
+  try{
+    const d=await send('register',{name,birth});
+    token=d.token;
+    document.getElementById('registration').hidden=true;
+    document.getElementById('voting').hidden=false;
+    document.getElementById('message').textContent='Digite 22 ou 13 para votar.';
+  }catch(e){status.textContent=e.message}
+  finally{registerBusy=false;setLoading('register',false)}
+};
+document.getElementById('confirm').onclick=async()=>{
+  if(busy||!token)return;
+  const vote=selected==='BLANK'?'BLANK':number;
+  if(!['22','13','BLANK'].includes(vote)){
+    document.getElementById('message').textContent='Digite 22 ou 13, ou selecione BRANCO.';return;
+  }
+  busy=true;setLoading('vote',true,'Registrando seu voto...');
+  try{
+    await send('vote',{token,vote});
+    sound('confirm');
+    document.getElementById('voting').hidden=true;
+    document.getElementById('message').textContent='FIM — voto da simulação registrado!';
+    token='';
+    await refresh();
+  }catch(e){document.getElementById('message').textContent=e.message}
+  finally{busy=false;setLoading('vote',false)}
+};
+async function refresh(){
+  if(resultsBusy)return;
+  if(!API_URL){document.getElementById('backendState').textContent='Placar indisponível até configurar Google Sheets.';return}
+  resultsBusy=true;setLoading('results',true,'Atualizando placar...');
+  try{
+    const d=await send('results',{});
+    const f=d.counts['22']||0,l=d.counts['13']||0,total=f+l;
+    document.getElementById('fcount').textContent=f+' votos';
+    document.getElementById('lcount').textContent=l+' votos';
+    for(const [key,count] of [['f',f],['l',l]]){
+      const p=total?100*count/total:0;
+      document.getElementById(key+'pct').textContent=p.toFixed(1)+'%';
+      document.getElementById(key+'bar').style.width=p+'%';
+    }
+    document.getElementById('leader').textContent=total===0?'Ainda sem votos.':f===l?'Empate na simulação.':(f>l?'Flávio Bolsonaro':'Luiz Inácio Lula da Silva')+' está à frente na simulação.';
+    document.getElementById('backendState').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');
+  }catch(e){document.getElementById('backendState').textContent=e.message}
+  finally{resultsBusy=false;setLoading('results',false)}
+}
+document.getElementById('refresh').onclick=refresh;render();refresh();
 </script></body></html>
