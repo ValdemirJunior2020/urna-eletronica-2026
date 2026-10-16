@@ -1,6 +1,6 @@
 // Same-origin Netlify bridge avoids Apps Script CORS errors on mobile browsers.
 // Google Sheets remains the database. The IP is forwarded only server-to-server over HTTPS; Google Apps Script hashes it with a private ScriptProperties secret and stores the hash, not the address.
-const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyRqltnrpsX7Qifox4zbfhzv8H5JwTruYsjfXOvteVFWnNOft4ojSQNHrXjB7wGfbToNw/exec';
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxnk255yBkTrDty5OE0u99kqYWEo6Zf5C3cz5z43kNSBSQmT0-OMo_SDJoIQtBB7Y4hJA/exec';
 
 function reply(data,status=200){
   return new Response(JSON.stringify(data),{
