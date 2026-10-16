@@ -3,26 +3,26 @@
  * AVISO: este endpoint público é adequado apenas a uma SIMULAÇÃO, não a votação auditável.
  */
 const SHEET_ID='1Xvu8XsGzHoLZF_3E0JRa8Fe9IGBQC0YwNQ45QSmlhjw';
-function tab(name, headers) {
-  // Esta função é auxiliar e nunca deve ser executada diretamente no editor.
-  // Validar PRIMEIRO evita criar uma aba vazia e chamar appendRow(undefined).
-  if (typeof name !== 'string' || !name.trim() ||
-      !Array.isArray(headers) || headers.length === 0) {
-    throw new Error('Nao execute tab() diretamente. No menu Executar, selecione setupSheets.');
-  }
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  let sh = ss.getSheetByName(name);
-  if (!sh) sh = ss.insertSheet(name);
-  // setValues requer explicitamente uma linha de cabecalhos nao vazia.
-  if (sh.getLastRow() === 0) {
-    sh.getRange(1, 1, 1, headers.length).setValues([headers]);
-  }
-  return sh;
-}
+// Execute setupSheets no editor para preparar/verificar as abas.
 function setupSheets() {
   tab('Cadastros', ['DataHora','Nome','Nascimento','TokenHash','Votou']);
   tab('Votos', ['DataHora','Número']);
   return 'Pronto: abas Cadastros e Votos verificadas. A aba Resumo fica preservada.';
+}
+function tab(name, headers) {
+  // Ao clicar Executar em tab sem argumentos, inicializa em vez de falhar.
+  if (name === undefined && headers === undefined) return setupSheets();
+  if (typeof name !== 'string' || !name.trim() ||
+      !Array.isArray(headers) || headers.length === 0) {
+    throw new Error('A funcao auxiliar tab exige um nome e cabecalhos validos.');
+  }
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sh = ss.getSheetByName(name);
+  if (!sh) sh = ss.insertSheet(name);
+  if (sh.getLastRow() === 0) {
+    sh.getRange(1, 1, 1, headers.length).setValues([headers]);
+  }
+  return sh;
 }
 function doGet() {
   return json({ok:true,service:'Urna Brasil — Simulacao educativa',status:'ready'});
