@@ -35,7 +35,7 @@ const DUPLICATE_MESSAGE = 'Este cadastro já confirmou um voto nesta simulação
 const IP_COOLDOWN_MS = 5 * 60 * 1000;
 
 function getIpWaitSeconds_(sheet, ipHash, nowMs) {
-  if (!/^[a-f0-9]{64}$/.test(ipHash)) return -1;
+  if (!/^[a-f0-9]{64}$/.test(ipHash)) return 0;
   // Percorre as participações recentes em blocos, sem buscar toda a planilha.
   for (let end=sheet.getLastRow(); end>=2; end-=250) {
     const start=Math.max(2,end-249);
@@ -54,6 +54,21 @@ function getIpWaitSeconds_(sheet, ipHash, nowMs) {
   }
   return 0;
 }
+// O segredo nunca fica no GitHub nem no navegador: é criado e guardado
+// nas Script Properties do próprio Apps Script. O IP bruto não é salvo.
+function ipHash_(clientIp) {
+  const raw=String(clientIp||'').trim();
+  if (!raw || raw.length>64 || !/^[0-9a-f:.]+$/i.test(raw)) return '';
+  const props=PropertiesService.getScriptProperties();
+  let secret=props.getProperty('URNA_IP_HASH_PEPPER');
+  if (!secret) {
+    secret=Utilities.getUuid()+Utilities.getUuid()+Utilities.getUuid();
+    props.setProperty('URNA_IP_HASH_PEPPER',secret);
+  }
+  const bytes=Utilities.computeHmacSha256Signature(raw,secret);
+  return bytes.map(b=>('0'+((b+256)%256).toString(16)).slice(-2)).join('');
+}
+
 function ipCooldownResponse_(seconds) {
   return json({
     ok:false,code:'IP_COOLDOWN',
@@ -89,7 +104,7 @@ function doPost(e) {
     const x = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     const reg = tab('Cadastros', ['DataHora','Nome','Nascimento','TokenHash','Votou']);
     const votes = tab('Votos', ['DataHora','Número']);
-    const ipHash = String(x.ipHash || '');
+    const ipHash = ipHash_(x.clientIp) || (/^[a-f0-9]{64}$/.test(String(x.ipHash||'')) ? String(x.ipHash) : '');
     const ipVotes = (x.action === 'register' || x.action === 'vote')
       ? tab('IP_Votos', ['DataHora','IPHash']) : null;
 
@@ -125,7 +140,8 @@ function doPost(e) {
       }
 
       const waitSeconds = getIpWaitSeconds_(ipVotes, ipHash, Date.now());
-      if (waitSeconds < 0) return json({ok:false,error:'Identificação da conexão indisponível. Acesse a urna pelo link oficial.'});
+      // Se a plataforma não fornecer IP, não bloqueie uma pessoa legítima.
+      // A deduplicação por nome+nascimento continua ativa.
       if (waitSeconds > 0) return ipCooldownResponse_(waitSeconds);
 
       const token = Utilities.getUuid() + Utilities.getUuid();
@@ -153,12 +169,13 @@ function doPost(e) {
         return json({ok:false,error:DUPLICATE_MESSAGE,code:'ALREADY_VOTED'});
       }
       const waitSeconds = getIpWaitSeconds_(ipVotes, ipHash, Date.now());
-      if (waitSeconds < 0) return json({ok:false,error:'Identificação da conexão indisponível. Acesse a urna pelo link oficial.'});
+      // Se a plataforma não fornecer IP, não bloqueie uma pessoa legítima.
+      // A deduplicação por nome+nascimento continua ativa.
       if (waitSeconds > 0) return ipCooldownResponse_(waitSeconds);
 
       votes.appendRow([new Date(),vote]);
       reg.getRange(i+2,5).setValue('SIM');
-      ipVotes.appendRow([new Date(),ipHash]);
+      if (ipHash) ipVotes.appendRow([new Date(),ipHash]);
       return json({ok:true});
     }
 
