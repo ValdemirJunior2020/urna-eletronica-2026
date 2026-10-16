@@ -1,6 +1,5 @@
-import { createHmac } from 'node:crypto';
 // Same-origin Netlify bridge avoids Apps Script CORS errors on mobile browsers.
-// Google Sheets remains the database. This function transmits only an HMAC of the client IP for a five-minute cooldown; never the raw IP.
+// Google Sheets remains the database. The IP is forwarded only server-to-server over HTTPS; Google Apps Script hashes it with a private ScriptProperties secret and stores the hash, not the address.
 const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyRqltnrpsX7Qifox4zbfhzv8H5JwTruYsjfXOvteVFWnNOft4ojSQNHrXjB7wGfbToNw/exec';
 
 function reply(data,status=200){
@@ -19,16 +18,9 @@ export default async function handler(request,context){
     // Deriva um identificador estável da conexão sem salvar o endereço IP em texto claro.
     // O segredo nunca é exposto ao navegador nem ao Google Sheets.
     if(payload.action==='register'||payload.action==='vote'){
-      const secret=Netlify.env.get('URNA_IP_HASH_SECRET');
-      const clientIP=context?.ip;
-      // Netlify pode não expor imediatamente variáveis de ambiente recém-configuradas.
-      // Quando não há segredo disponível, o Apps Script gera o identificador HMAC
-      // com um segredo privado armazenado em ScriptProperties.
-      // Nunca salvar o IP bruto no Google Sheets.
-      if(clientIP){
-        if(secret)payload.ipHash=createHmac('sha256',secret).update(clientIP).digest('hex');
-        else payload.clientIp=clientIP;
-      }
+      // O Netlify fornece o IP real da conexão. O Apps Script calcula o HMAC
+      // em ScriptProperties e nunca armazena o endereço na planilha.
+      if(context?.ip)payload.clientIp=context.ip;
     }
     const upstream=await fetch(APPS_SCRIPT_URL,{
       method:'POST',
