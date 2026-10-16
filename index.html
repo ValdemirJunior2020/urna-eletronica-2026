@@ -8,7 +8,7 @@
 <script src="/config.js"></script><script>
 const API_URL = window.URNA_API_URL || ''; // Configure URL do Apps Script em config.js
 const AUDIO_BASE='https://raw.githubusercontent.com/JohnPetros/urna-eletronica/main/public/audios/';
-const images={ '22':'https://commons.wikimedia.org/wiki/Special:Redirect/file/Fl%C3%A1vio%20Bolsonaro.jpg','13':'https://commons.wikimedia.org/wiki/Special:Redirect/file/Foto%20oficial%20de%20Luiz%20In%C3%A1cio%20Lula%20da%20Silva%20%28estreita%29.jpg'};
+const images={ '22':'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Foto_oficial_do_senador_Fl%C3%A1vio_Bolsonaro_%28v._AgSen%29_%283x4%29.jpg/250px-Foto_oficial_do_senador_Fl%C3%A1vio_Bolsonaro_%28v._AgSen%29_%283x4%29.jpg','13':'https://ichef.bbci.co.uk/news/1024/cpsprodpb/e94d/live/f1d3cb20-8c1f-11f1-94b2-05bc97107049.jpg.webp'};
 const names={'22':'Flávio Bolsonaro','13':'Luiz Inácio Lula da Silva'};
 let number='',selected='',token='',busy=false;
 function sound(type){const a=new Audio(AUDIO_BASE+(type==='confirm'?'confirm.wav':'key.wav'));a.volume=.6;a.play().catch(()=>{})}
