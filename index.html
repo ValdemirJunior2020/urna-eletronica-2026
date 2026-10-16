@@ -7,10 +7,10 @@
 .birth-parts select{-webkit-appearance:menulist;appearance:auto}
 .birth-parts input::placeholder{color:#6a766e;opacity:1}
 .birth-help{font-size:12px;color:#56645d;margin:6px 0 0}
-.primary{background:#155a44;color:white;border:0;border-radius:8px;padding:14px 18px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px}.primary:disabled{opacity:.45;cursor:not-allowed}.meter{height:20px;background:#e6e9e6;border-radius:50px;overflow:hidden;margin-top:5px}.fill{height:100%;background:#4f7d6e}.fill.blue{background:#587fa7}.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}.small{font-size:13px;color:#56645d}#message{min-height:24px;font-weight:700}.vote-status{background:#fff8e8;border:1px solid #e7d6ad;border-radius:9px;padding:12px 14px;margin-top:12px;font-size:14px;color:#614711}.vote-status strong{display:block;font-size:15px;margin-bottom:3px}.vote-status.pending{background:#eef5ff;border-color:#bbd2ef;color:#264d72}.vote-status.error{background:#fff1f0;border-color:#efc1be;color:#813d37}footer{text-align:center;padding:24px;font-size:12px;color:#53645c}@media(max-width:690px){main{padding:10px}.frame{grid-template-columns:1fr;padding:10px}.screen{min-height:300px;padding:15px}.keyboard{padding:12px}.key{min-height:52px}.fields{grid-template-columns:1fr}.candidate img{width:88px;height:110px}.candidate strong{font-size:19px}}
+.primary{background:#155a44;color:white;border:0;border-radius:8px;padding:14px 18px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px}.primary:disabled{opacity:.45;cursor:not-allowed}.meter{height:20px;background:#e6e9e6;border-radius:50px;overflow:hidden;margin-top:5px}.fill{height:100%;background:linear-gradient(90deg,#168748 0%,#168748 50%,#f2d533 50%,#f2d533 100%)}.fill.red{background:#d12d30}.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}.small{font-size:13px;color:#56645d}.feedback-cover{position:fixed;inset:0;background:#0e1b189e;z-index:10010;display:grid;place-items:center;padding:18px}.feedback-box{width:min(100%,370px);background:#fff;border-radius:16px;padding:25px 20px;text-align:center;box-shadow:0 18px 55px #0004}.feedback-box h2{font-size:20px;margin:0 0 10px}.feedback-box p{line-height:1.5;margin:0 0 14px;font-size:15px}.feedback-box .primary{min-width:125px;margin-top:4px}.feedback-cover.duplicate .feedback-box{border-top:5px solid #cc3035}.feedback-cover.duplicate h2{color:#b4232c}.feedback-cover.waiting .feedback-box{border-top:5px solid #ca932c}.feedback-cover.waiting h2{color:#705010}#waitClock{font-size:24px;font-weight:800;color:#705010;font-variant-numeric:tabular-nums;margin-bottom:12px}#message{min-height:24px;font-weight:700}.vote-status{background:#fff8e8;border:1px solid #e7d6ad;border-radius:9px;padding:12px 14px;margin-top:12px;font-size:14px;color:#614711}.vote-status strong{display:block;font-size:15px;margin-bottom:3px}.vote-status.pending{background:#eef5ff;border-color:#bbd2ef;color:#264d72}.vote-status.error{background:#fff1f0;border-color:#efc1be;color:#813d37}footer{text-align:center;padding:24px;font-size:12px;color:#53645c}@media(max-width:690px){main{padding:10px}.frame{grid-template-columns:1fr;padding:10px}.screen{min-height:300px;padding:15px}.keyboard{padding:12px}.key{min-height:52px}.fields{grid-template-columns:1fr}.candidate img{width:88px;height:110px}.candidate strong{font-size:19px}}
 [hidden]{display:none!important}.busy-overlay{position:fixed;inset:0;z-index:9999;background:#f4f8f4c9;backdrop-filter:blur(3px);display:grid;place-items:center;padding:16px}.busy-panel{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid #d8e4da;padding:14px 20px;border-radius:14px;box-shadow:0 12px 32px #18312924;font-weight:700;font-size:14px;min-width:195px}.busy-panel img{width:30px;height:30px}.primary:disabled,.action:disabled{opacity:.5;cursor:progress}
 </style></head><body><div id="busyOverlay" class="busy-overlay" role="status" aria-live="polite" aria-atomic="true" hidden><div class="busy-panel"><img src="/loading.gif" width="30" height="30" alt=""><span id="busyLabel">Carregando...</span></div></div><main><header><h1>🗳️ Urna Brasil 2026</h1><div class="notice">SIMULAÇÃO NÃO OFICIAL · NÃO É PESQUISA ELEITORAL · SEM VÍNCULO COM O TSE</div></header>
-<section class="card" id="registration"><h2>Cadastro para simulação</h2><p class="small">Nome e data de nascimento são dados pessoais. Ao participar, você concorda com o registro destes dados para controle da simulação. A escolha do voto é registrada separadamente e não aparece junto ao cadastro.</p><div class="fields"><label>Nome completo<input id="name" autocomplete="name" placeholder="Seu nome" maxlength="100"></label><fieldset class="birth-field"><legend>Data de nascimento</legend><div class="birth-parts">
+<section class="card" id="registration"><h2>Cadastro para simulação</h2><p class="small">Nome e data de nascimento são dados pessoais. Ao participar, você concorda com o registro destes dados para controle da simulação. A escolha do voto é registrada separadamente e não aparece junto ao cadastro. A conexão é identificada por um código criptográfico para limitar novas participações por 5 minutos.</p><div class="fields"><label>Nome completo<input id="name" autocomplete="name" placeholder="Seu nome" maxlength="100"></label><fieldset class="birth-field"><legend>Data de nascimento</legend><div class="birth-parts">
 <select id="birthDay" aria-label="Dia de nascimento" autocomplete="bday-day"><option value="">Dia</option></select>
 <select id="birthMonth" aria-label="Mês de nascimento" autocomplete="bday-month">
 <option value="">Mês</option><option value="1">Jan</option><option value="2">Fev</option><option value="3">Mar</option><option value="4">Abr</option><option value="5">Mai</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Ago</option><option value="9">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
@@ -24,7 +24,8 @@
 <button class="primary" id="shareVote" type="button">↗ Compartilhar</button>
 <p id="shareStatus" class="small" role="status"></p>
 </section>
-<section class="card" id="results"><h2>📊 Resultado da simulação</h2><p class="small">Contagem dos votos enviados a este aplicativo. Não representa votos oficiais nem uma amostra científica.</p><div class="stats"><div><strong>Flávio Bolsonaro (22)</strong><div id="fcount">0 votos</div><div class="meter"><div class="fill" id="fbar" style="width:0%"></div></div><span id="fpct">0%</span></div><div><strong>Luiz Inácio Lula da Silva (13)</strong><div id="lcount">0 votos</div><div class="meter"><div class="fill blue" id="lbar" style="width:0%"></div></div><span id="lpct">0%</span></div></div><p id="leader" style="font-weight:800">Ainda sem votos.</p><button class="primary" id="refresh">Atualizar placar</button><p class="small" id="backendState"></p></section>
+<section class="card" id="results"><h2>📊 Resultado da simulação</h2><p class="small">Contagem dos votos enviados a este aplicativo. Não representa votos oficiais nem uma amostra científica.</p><div class="stats"><div><strong>Flávio Bolsonaro (22)</strong><div id="fcount">0 votos</div><div class="meter"><div class="fill" id="fbar" style="width:0%"></div></div><span id="fpct">0%</span></div><div><strong>Luiz Inácio Lula da Silva (13)</strong><div id="lcount">0 votos</div><div class="meter"><div class="fill red" id="lbar" style="width:0%"></div></div><span id="lpct">0%</span></div></div><p id="leader" style="font-weight:800">Ainda sem votos.</p><button class="primary" id="refresh">Atualizar placar</button><p class="small" id="backendState"></p></section>
+<div class="feedback-cover" id="feedbackDialog" role="alertdialog" aria-modal="true" aria-labelledby="feedbackHeading" aria-describedby="feedbackText" hidden><div class="feedback-box"><h2 id="feedbackHeading"></h2><p id="feedbackText"></p><div id="waitClock" hidden></div><button class="primary" id="feedbackClose" type="button">Entendi</button></div></div>
 <footer>Projeto educacional independente · Layout inspirado na urna brasileira · Áudios preservados como referência do projeto de João Pedro Carvalho (MIT) · Fotos Wikimedia Commons</footer></main>
 <script src="/config.js"></script><script>
 const API_URL = window.URNA_API_URL || ''; // Configure URL do Apps Script em config.js
@@ -33,7 +34,37 @@ const images={ '22':'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/F
 const names={'22':'Flávio Bolsonaro','13':'Luiz Inácio Lula da Silva'};
 let number='',selected='',token='',busy=false;
 let registerBusy=false, resultsBusy=false, loadingTimer=null;
+let feedbackInterval=null;
 const pendingOperations=new Map();
+const feedbackDialog=document.getElementById('feedbackDialog');
+const feedbackClose=document.getElementById('feedbackClose');
+const waitClock=document.getElementById('waitClock');
+function closeFeedback(){feedbackDialog.hidden=true;if(feedbackInterval){clearInterval(feedbackInterval);feedbackInterval=null}}
+feedbackClose.onclick=closeFeedback;
+function showFeedback(error){
+  const isDuplicate=error.code==='ALREADY_VOTED'||/j[aá] votou|j[aá] confirmado|token j[aá] utilizado/i.test(error.message||'');
+  const isWaiting=error.code==='IP_COOLDOWN';
+  if(!isDuplicate&&!isWaiting)return false;
+  closeFeedback();
+  feedbackDialog.className='feedback-cover '+(isDuplicate?'duplicate':'waiting');
+  document.getElementById('feedbackHeading').textContent=isDuplicate?'Voto já registrado':'Aguarde para votar';
+  document.getElementById('feedbackText').textContent=isDuplicate?'Este cadastro já participou da simulação. Não é possível votar novamente.':'Outra pessoa usou esta conexão recentemente. Aguarde para continuar.';
+  waitClock.hidden=!isWaiting;
+  if(isWaiting){
+    const until=Date.now()+Math.max(1,Math.ceil(Number(error.retryAfterSeconds)||300))*1000;
+    const update=()=>{
+      const left=Math.max(0,Math.ceil((until-Date.now())/1000));
+      const m=String(Math.floor(left/60)).padStart(2,'0');
+      const sec=String(left%60).padStart(2,'0');
+      waitClock.textContent=left?m+':'+sec:'Pode tentar novamente agora.';
+      if(left===0){clearInterval(feedbackInterval);feedbackInterval=null;}
+    };
+    update();feedbackInterval=setInterval(update,1000);
+  }
+  feedbackDialog.hidden=false;
+  feedbackClose.focus();
+  return true;
+}
 function setLoading(operation,active,label){
   const overlay=document.getElementById('busyOverlay');
   if(active)pendingOperations.set(operation,label||'Aguarde...');
@@ -74,7 +105,7 @@ async function send(action,payload){
     if(!response.ok)throw Error('Servidor respondeu HTTP '+response.status+'.');
     let data;
     try{data=await response.json()}catch(e){throw Error('Resposta do Google Apps Script inválida ou acesso não autorizado.')}
-    if(!data.ok)throw Error(data.error||'Falha ao salvar.');
+    if(!data.ok){const error=new Error(data.error||'Falha ao salvar.');error.code=data.code||'';error.retryAfterSeconds=data.retryAfterSeconds||0;throw error;}
     return data;
   }catch(e){
     if(e.name==='AbortError')throw Error(action==='vote'?'A confirmação demorou. Verifique o placar antes de tentar novamente.':'A conexão demorou. Confira sua internet e tente novamente.');
@@ -117,7 +148,7 @@ document.getElementById('enter').onclick=async()=>{
     document.getElementById('registration').hidden=true;
     document.getElementById('voting').hidden=false;
     document.getElementById('message').textContent='Digite 22 ou 13 para votar.';
-  }catch(e){status.textContent=e.message}
+  }catch(e){status.textContent=e.message;showFeedback(e)}
   finally{registerBusy=false;setLoading('register',false)}
 };
 const SHARE_URL='https://urna-eletronica2026.netlify.app/';
@@ -162,7 +193,7 @@ document.getElementById('confirm').onclick=async()=>{
     document.getElementById('voteSuccess').hidden=false;
     document.getElementById('voteSuccess').scrollIntoView({behavior:'smooth',block:'center'});
     await refresh();
-  }catch(e){updateVoteStatus('error');document.getElementById('message').textContent=e.message}
+  }catch(e){updateVoteStatus('error');document.getElementById('message').textContent=e.message;showFeedback(e)}
   finally{busy=false;setLoading('vote',false)}
 };
 async function refresh(){
