@@ -21,8 +21,14 @@ export default async function handler(request,context){
     if(payload.action==='register'||payload.action==='vote'){
       const secret=Netlify.env.get('URNA_IP_HASH_SECRET');
       const clientIP=context?.ip;
-      if(!secret||!clientIP)return reply({ok:false,error:'Proteção de conexão indisponível. Tente novamente em instantes.'},503);
-      payload.ipHash=createHmac('sha256',secret).update(clientIP).digest('hex');
+      // Netlify pode não expor imediatamente variáveis de ambiente recém-configuradas.
+      // Quando não há segredo disponível, o Apps Script gera o identificador HMAC
+      // com um segredo privado armazenado em ScriptProperties.
+      // Nunca salvar o IP bruto no Google Sheets.
+      if(clientIP){
+        if(secret)payload.ipHash=createHmac('sha256',secret).update(clientIP).digest('hex');
+        else payload.clientIp=clientIP;
+      }
     }
     const upstream=await fetch(APPS_SCRIPT_URL,{
       method:'POST',
